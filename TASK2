@@ -1,0 +1,5 @@
+void activateGeyser() {
+    int currentTemp = sensor.getTemperature();
+    int requiredTemp = currentTemp + 15;
+    heater.setHeatingTemperature(requiredTemp);
+}

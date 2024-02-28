@@ -17,8 +17,7 @@ public:
 class HeatingSystem {
 public:
     double calculateRequiredTemperature(double currentTemperature) {
-        // Implement the logic to calculate the required temperature based on current temperature
-        // For demonstration, let's assume a simple logic like adding 10 degrees
+       
         return currentTemperature + 10;
     }
 };

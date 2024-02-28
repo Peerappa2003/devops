@@ -1,5 +1,87 @@
-void activateGeyser() {
-    int currentTemp = sensor.getTemperature();
-    int requiredTemp = currentTemp + 15;
-    heater.setHeatingTemperature(requiredTemp);
+#include <iostream>
+
+class TemperatureSensor {
+public:
+    virtual double getCurrentTemperature() const = 0;
+    virtual ~TemperatureSensor() {} // Adding virtual destructor for proper cleanup
+};
+
+class HeatingSystem {
+public:
+    virtual double calculateRequiredTemperature(double currentTemperature) const = 0;
+    virtual ~HeatingSystem() {} // Adding virtual destructor for proper cleanup
+};
+
+class BathroomGeyser {
+private:
+    const TemperatureSensor& sensor;
+    const HeatingSystem& heatingSystem;
+    double heatingTemperature;
+
+public:
+    BathroomGeyser(const TemperatureSensor& sensor, const HeatingSystem& heatingSystem)
+        : sensor(sensor), heatingSystem(heatingSystem), heatingTemperature(0) {}
+
+    void activateGeyser() {
+        double currentTemperature = sensor.getCurrentTemperature();
+        double requiredTemperature = heatingSystem.calculateRequiredTemperature(currentTemperature);
+        setHeatingTemperature(requiredTemperature);
+    }
+
+    double getHeatingTemperature() const {
+        return heatingTemperature;
+    }
+
+private:
+    void setHeatingTemperature(double temperature) {
+        heatingTemperature = temperature;
+    }
+};
+
+class SmartHomeSystem {
+public:
+    void activateGeyser(const BathroomGeyser& geyser) const {
+        geyser.activateGeyser();
+        std::cout << "Geyser activated. Heating temperature: " << geyser.getHeatingTemperature() << " degrees" << std::endl;
+    }
+};
+
+class Homeowner {
+public:
+    void getOutOfBed(const SmartHomeSystem& smartHome) const {
+        smartHome.activateGeyser(geyser);
+    }
+
+    Homeowner(const BathroomGeyser& geyser) : geyser(geyser) {}
+
+private:
+    const BathroomGeyser& geyser;
+};
+
+class DefaultTemperatureSensor : public TemperatureSensor {
+public:
+    double getCurrentTemperature() const override {
+        // Example implementation to get current temperature
+        return 25.0; // Replace with actual implementation
+    }
+};
+
+class DefaultHeatingSystem : public HeatingSystem {
+public:
+    double calculateRequiredTemperature(double currentTemperature) const override {
+        // Example logic to calculate required temperature
+        return currentTemperature + 10.0; // Adding 10 degrees
+    }
+};
+
+int main() {
+    DefaultTemperatureSensor temperatureSensor;
+    DefaultHeatingSystem heatingSystem;
+    BathroomGeyser geyser(temperatureSensor, heatingSystem);
+    SmartHomeSystem smartHome;
+    Homeowner homeowner(geyser);
+
+    homeowner.getOutOfBed(smartHome);
+
+    return 0;
 }

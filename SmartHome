@@ -1,0 +1,71 @@
+#include <iostream>
+
+class TemperatureSensor {
+private:
+    double currentTemperature;
+
+public:
+    double getCurrentTemperature() const {
+        return currentTemperature;
+    }
+
+    void setCurrentTemperature(double temperature) {
+        currentTemperature = temperature;
+    }
+};
+
+class HeatingSystem {
+public:
+    double calculateRequiredTemperature(double currentTemperature) {
+        // Implement the logic to calculate the required temperature based on current temperature
+        // For demonstration, let's assume a simple logic like adding 10 degrees
+        return currentTemperature + 10;
+    }
+};
+
+class BathroomGeyser {
+private:
+    TemperatureSensor sensor;
+    HeatingSystem heatingSystem;
+    double heatingTemperature;
+
+public:
+    void activateGeyser() {
+        double currentTemperature = sensor.getCurrentTemperature();
+        double requiredTemperature = heatingSystem.calculateRequiredTemperature(currentTemperature);
+        setHeatingTemperature(requiredTemperature);
+    }
+
+    double getHeatingTemperature() const {
+        return heatingTemperature;
+    }
+
+    void setHeatingTemperature(double temperature) {
+        heatingTemperature = temperature;
+    }
+};
+
+class SmartHomeSystem {
+public:
+    void activateGeyser(BathroomGeyser& geyser) {
+        geyser.activateGeyser();
+        std::cout << "Geyser activated. Heating temperature: " << geyser.getHeatingTemperature() << " degrees" << std::endl;
+    }
+};
+
+class Homeowner {
+public:
+    void getOutOfBed(SmartHomeSystem& smartHome) {
+        smartHome.activateGeyser(geyser);
+    }
+
+private:
+    BathroomGeyser geyser;
+};
+
+int main() {
+    Homeowner homeowner;
+    SmartHomeSystem smartHome;
+    homeowner.getOutOfBed(smartHome);
+    return 0;
+}
